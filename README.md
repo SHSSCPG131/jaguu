@@ -1,12 +1,5 @@
 # gorilla/mux
 
-[![GoDoc](https://godoc.org/github.com/gorilla/mux?status.svg)](https://godoc.org/github.com/gorilla/mux)
-[![CircleCI](https://circleci.com/gh/gorilla/mux.svg?style=svg)](https://circleci.com/gh/gorilla/mux)
-[![Sourcegraph](https://sourcegraph.com/github.com/gorilla/mux/-/badge.svg)](https://sourcegraph.com/github.com/gorilla/mux?badge)
-![Gorilla Logo](http://www.gorillatoolkit.org/static/images/gorilla-icon-64.png)
-
-https://www.gorillatoolkit.org/pkg/mux
-
 Its Mixture of Web-Dev apps and SSH Net Protocol Package
 Package `gorilla/mux` implements a request router and dispatcher for matching incoming requests to
 their respective handleamit.
