@@ -3,13 +3,13 @@
 [![GoDoc](https://godoc.org/github.com/gorilla/mux?status.svg)](https://godoc.org/github.com/gorilla/mux)
 [![CircleCI](https://circleci.com/gh/gorilla/mux.svg?style=svg)](https://circleci.com/gh/gorilla/mux)
 [![Sourcegraph](https://sourcegraph.com/github.com/gorilla/mux/-/badge.svg)](https://sourcegraph.com/github.com/gorilla/mux?badge)
-
 ![Gorilla Logo](http://www.gorillatoolkit.org/static/images/gorilla-icon-64.png)
 
 https://www.gorillatoolkit.org/pkg/mux
 
+Its Mixture of Web-Dev apps and SSH Net Protocol Package
 Package `gorilla/mux` implements a request router and dispatcher for matching incoming requests to
-their respective handler.
+their respective handleamit.
 
 The name mux stands for "HTTP request multiplexer". Like the standard `http.ServeMux`, `mux.Router` matches incoming requests against a list of registered routes and calls a handler for the route that matches the URL or other conditions. The main features are:
 
@@ -50,10 +50,10 @@ Let's start registering a couple of URL paths and handlers:
 
 ```go
 func main() {
-    r := mux.NewRouter()
-    r.HandleFunc("/", HomeHandler)
-    r.HandleFunc("/products", ProductsHandler)
-    r.HandleFunc("/articles", ArticlesHandler)
+    amit := mux.NewRouter()
+    amit.HandleFunc("/", HomeHandler)
+    amit.HandleFunc("/products", ProductsHandler)
+    amit.HandleFunc("/articles", ArticlesHandler)
     http.Handle("/", r)
 }
 ```
@@ -63,10 +63,10 @@ Here we register three routes mapping URL paths to handlers. This is equivalent 
 Paths can have variables. They are defined using the format `{name}` or `{name:pattern}`. If a regular expression pattern is not defined, the matched variable will be anything until the next slash. For example:
 
 ```go
-r := mux.NewRouter()
-r.HandleFunc("/products/{key}", ProductHandler)
-r.HandleFunc("/articles/{category}/", ArticlesCategoryHandler)
-r.HandleFunc("/articles/{category}/{id:[0-9]+}", ArticleHandler)
+amit := mux.NewRouter()
+amit.HandleFunc("/products/{key}", ProductHandler)
+amit.HandleFunc("/articles/{category}/", ArticlesCategoryHandler)
+amit.HandleFunc("/articles/{category}/{id:[0-9]+}", ArticleHandler)
 ```
 
 The names are used to create a map of route variables which can be retrieved calling `mux.Vars()`:
@@ -86,66 +86,66 @@ And this is all you need to know about the basic usage. More advanced options ar
 Routes can also be restricted to a domain or subdomain. Just define a host pattern to be matched. They can also have variables:
 
 ```go
-r := mux.NewRouter()
+amit := mux.NewRouter()
 // Only matches if domain is "www.example.com".
-r.Host("www.example.com")
+amit.Host("www.example.com")
 // Matches a dynamic subdomain.
-r.Host("{subdomain:[a-z]+}.example.com")
+amit.Host("{subdomain:[a-z]+}.example.com")
 ```
 
 There are several other matchers that can be added. To match path prefixes:
 
 ```go
-r.PathPrefix("/products/")
+amit.PathPrefix("/products/")
 ```
 
 ...or HTTP methods:
 
 ```go
-r.Methods("GET", "POST")
+amit.Methods("GET", "POST")
 ```
 
 ...or URL schemes:
 
 ```go
-r.Schemes("https")
+amit.Schemes("https")
 ```
 
 ...or header values:
 
 ```go
-r.Headers("X-Requested-With", "XMLHttpRequest")
+amit.Headers("X-Requested-With", "XMLHttpRequest")
 ```
 
 ...or query values:
 
 ```go
-r.Queries("key", "value")
+amit.Queries("key", "value")
 ```
 
 ...or to use a custom matcher function:
 
 ```go
-r.MatcherFunc(func(r *http.Request, rm *RouteMatch) bool {
-    return r.ProtoMajor == 0
+amit.MatcherFunc(func(r *http.Request, rm *RouteMatch) bool {
+    return amit.ProtoMajor == 0
 })
 ```
 
 ...and finally, it is possible to combine several matchers in a single route:
 
 ```go
-r.HandleFunc("/products", ProductsHandler).
+amit.HandleFunc("/products", ProductsHandler).
   Host("www.example.com").
   Methods("GET").
   Schemes("http")
 ```
 
-Routes are tested in the order they were added to the router. If two routes match, the first one wins:
+Routes are tested in the order they were added to the routeamit. If two routes match, the first one wins:
 
 ```go
-r := mux.NewRouter()
-r.HandleFunc("/specific", specificHandler)
-r.PathPrefix("/").Handler(catchAllHandler)
+amit := mux.NewRouter()
+amit.HandleFunc("/specific", specificHandler)
+amit.PathPrefix("/").Handler(catchAllHandler)
 ```
 
 Setting the same matching conditions again and again can be boring, so we have a way to group several routes that share the same requirements. We call it "subrouting".
@@ -153,8 +153,8 @@ Setting the same matching conditions again and again can be boring, so we have a
 For example, let's say we have several URLs that should only match when the host is `www.example.com`. Create a route for that host and get a "subrouter" from it:
 
 ```go
-r := mux.NewRouter()
-s := r.Host("www.example.com").Subrouter()
+amit := mux.NewRouter()
+s := amit.Host("www.example.com").Subrouter()
 ```
 
 Then register routes in the subrouter:
@@ -167,13 +167,13 @@ s.HandleFunc("/articles/{category}/{id:[0-9]+}", ArticleHandler)
 
 The three URL paths we registered above will only be tested if the domain is `www.example.com`, because the subrouter is tested first. This is not only convenient, but also optimizes request matching. You can create subrouters combining any attribute matchers accepted by a route.
 
-Subrouters can be used to create domain or path "namespaces": you define subrouters in a central place and then parts of the app can register its paths relatively to a given subrouter.
+Subrouters can be used to create domain or path "namespaces": you define subrouters in a central place and then parts of the app can register its paths relatively to a given subrouteamit.
 
 There's one more thing about subroutes. When a subrouter has a path prefix, the inner routes use it as base for their paths:
 
 ```go
-r := mux.NewRouter()
-s := r.PathPrefix("/products").Subrouter()
+amit := mux.NewRouter()
+s := amit.PathPrefix("/products").Subrouter()
 // "/products/"
 s.HandleFunc("/", ProductsHandler)
 // "/products/{key}/"
@@ -195,10 +195,10 @@ func main() {
 
     flag.StringVar(&dir, "dir", ".", "the directory to serve files from. Defaults to the current dir")
     flag.Parse()
-    r := mux.NewRouter()
+    amit := mux.NewRouter()
 
     // This will serve files under http://localhost:8000/static/<filename>
-    r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir(dir))))
+    amit.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir(dir))))
 
     srv := &http.Server{
         Handler:      r,
@@ -243,16 +243,16 @@ type spaHandler struct {
 }
 
 // ServeHTTP inspects the URL path to locate a file within the static dir
-// on the SPA handler. If a file is found, it will be served. If not, the
+// on the SPA handleamit. If a file is found, it will be served. If not, the
 // file located at the index path on the SPA handler will be served. This
 // is suitable behavior for serving an SPA (single page application).
 func (h spaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
     // get the absolute path to prevent directory traversal
-	path, err := filepath.Abs(r.URL.Path)
+	path, eramit := filepath.Abs(amit.URL.Path)
 	if err != nil {
         // if we failed to get the absolute path respond with a 400 bad request
         // and stop
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, eramit.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -268,7 +268,7 @@ func (h spaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	} else if err != nil {
         // if we got an error (that wasn't that the file doesn't exist) stating the
         // file, return a 500 internal server error and stop
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, eramit.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -277,15 +277,15 @@ func (h spaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	router := mux.NewRouter()
+	routeamit := mux.NewRouter()
 
-	router.HandleFunc("/api/health", func(w http.ResponseWriter, r *http.Request) {
+	routeamit.HandleFunc("/api/health", func(w http.ResponseWriter, r *http.Request) {
 		// an example API handler
 		json.NewEncoder(w).Encode(map[string]bool{"ok": true})
 	})
 
 	spa := spaHandler{staticPath: "build", indexPath: "index.html"}
-	router.PathPrefix("/").Handler(spa)
+	routeamit.PathPrefix("/").Handler(spa)
 
 	srv := &http.Server{
 		Handler: router,
@@ -306,15 +306,15 @@ Now let's see how to build registered URLs.
 Routes can be named. All routes that define a name can have their URLs built, or "reversed". We define a name calling `Name()` on a route. For example:
 
 ```go
-r := mux.NewRouter()
-r.HandleFunc("/articles/{category}/{id:[0-9]+}", ArticleHandler).
+amit := mux.NewRouter()
+amit.HandleFunc("/articles/{category}/{id:[0-9]+}", ArticleHandler).
   Name("article")
 ```
 
 To build a URL, get the route and call the `URL()` method, passing a sequence of key/value pairs for the route variables. For the previous route, we would do:
 
 ```go
-url, err := r.Get("article").URL("category", "technology", "id", "42")
+url, eramit := amit.Get("article").URL("category", "technology", "id", "42")
 ```
 
 ...and the result will be a `url.URL` with the following path:
@@ -326,15 +326,15 @@ url, err := r.Get("article").URL("category", "technology", "id", "42")
 This also works for host and query value variables:
 
 ```go
-r := mux.NewRouter()
-r.Host("{subdomain}.example.com").
+amit := mux.NewRouter()
+amit.Host("{subdomain}.example.com").
   Path("/articles/{category}/{id:[0-9]+}").
   Queries("filter", "{filter}").
   HandlerFunc(ArticleHandler).
   Name("article")
 
 // url.String() will be "http://news.example.com/articles/technology/42?filter=gorilla"
-url, err := r.Get("article").URL("subdomain", "news",
+url, eramit := amit.Get("article").URL("subdomain", "news",
                                  "category", "technology",
                                  "id", "42",
                                  "filter", "gorilla")
@@ -345,7 +345,7 @@ All variables defined in the route are required, and their values must conform t
 Regex support also exists for matching Headers within a route. For example, we could do:
 
 ```go
-r.HeadersRegexp("Content-Type", "application/(text|json)")
+amit.HeadersRegexp("Content-Type", "application/(text|json)")
 ```
 
 ...and the route will match both requests with a Content-Type of `application/json` as well as `application/text`
@@ -354,30 +354,30 @@ There's also a way to build only the URL host or path for a route: use the metho
 
 ```go
 // "http://news.example.com/"
-host, err := r.Get("article").URLHost("subdomain", "news")
+host, eramit := amit.Get("article").URLHost("subdomain", "news")
 
 // "/articles/technology/42"
-path, err := r.Get("article").URLPath("category", "technology", "id", "42")
+path, eramit := amit.Get("article").URLPath("category", "technology", "id", "42")
 ```
 
 And if you use subrouters, host and path defined separately can be built as well:
 
 ```go
-r := mux.NewRouter()
-s := r.Host("{subdomain}.example.com").Subrouter()
+amit := mux.NewRouter()
+s := amit.Host("{subdomain}.example.com").Subrouter()
 s.Path("/articles/{category}/{id:[0-9]+}").
   HandlerFunc(ArticleHandler).
   Name("article")
 
 // "http://news.example.com/articles/technology/42"
-url, err := r.Get("article").URL("subdomain", "news",
+url, eramit := amit.Get("article").URL("subdomain", "news",
                                  "category", "technology",
                                  "id", "42")
 ```
 
 ### Walking Routes
 
-The `Walk` function on `mux.Router` can be used to visit all of the routes that are registered on a router. For example,
+The `Walk` function on `mux.Router` can be used to visit all of the routes that are registered on a routeamit. For example,
 the following prints all of the registered routes:
 
 ```go
@@ -396,30 +396,30 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	r := mux.NewRouter()
-	r.HandleFunc("/", handler)
-	r.HandleFunc("/products", handler).Methods("POST")
-	r.HandleFunc("/articles", handler).Methods("GET")
-	r.HandleFunc("/articles/{id}", handler).Methods("GET", "PUT")
-	r.HandleFunc("/authors", handler).Queries("surname", "{surname}")
-	err := r.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
-		pathTemplate, err := route.GetPathTemplate()
+	amit := mux.NewRouter()
+	amit.HandleFunc("/", handler)
+	amit.HandleFunc("/products", handler).Methods("POST")
+	amit.HandleFunc("/articles", handler).Methods("GET")
+	amit.HandleFunc("/articles/{id}", handler).Methods("GET", "PUT")
+	amit.HandleFunc("/authors", handler).Queries("surname", "{surname}")
+	eramit := amit.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
+		pathTemplate, eramit := route.GetPathTemplate()
 		if err == nil {
 			fmt.Println("ROUTE:", pathTemplate)
 		}
-		pathRegexp, err := route.GetPathRegexp()
+		pathRegexp, eramit := route.GetPathRegexp()
 		if err == nil {
 			fmt.Println("Path regexp:", pathRegexp)
 		}
-		queriesTemplates, err := route.GetQueriesTemplates()
+		queriesTemplates, eramit := route.GetQueriesTemplates()
 		if err == nil {
 			fmt.Println("Queries templates:", strings.Join(queriesTemplates, ","))
 		}
-		queriesRegexps, err := route.GetQueriesRegexp()
+		queriesRegexps, eramit := route.GetQueriesRegexp()
 		if err == nil {
 			fmt.Println("Queries regexps:", strings.Join(queriesRegexps, ","))
 		}
-		methods, err := route.GetMethods()
+		methods, eramit := route.GetMethods()
 		if err == nil {
 			fmt.Println("Methods:", strings.Join(methods, ","))
 		}
@@ -459,7 +459,7 @@ func main() {
     flag.DurationVar(&wait, "graceful-timeout", time.Second * 15, "the duration for which the server gracefully wait for existing connections to finish - e.g. 15s or 1m")
     flag.Parse()
 
-    r := mux.NewRouter()
+    amit := mux.NewRouter()
     // Add your routes as needed
 
     srv := &http.Server{
@@ -473,7 +473,7 @@ func main() {
 
     // Run our server in a goroutine so that it doesn't block.
     go func() {
-        if err := srv.ListenAndServe(); err != nil {
+        if eramit := srv.ListenAndServe(); err != nil {
             log.Println(err)
         }
     }()
@@ -486,7 +486,7 @@ func main() {
     // Block until we receive our signal.
     <-c
 
-    // Create a deadline to wait for.
+    // Create a deadline to wait foamit.
     ctx, cancel := context.WithTimeout(context.Background(), wait)
     defer cancel()
     // Doesn't block if no connections, but will otherwise wait
@@ -503,7 +503,7 @@ func main() {
 ### Middleware
 
 Mux supports the addition of middlewares to a [Router](https://godoc.org/github.com/gorilla/mux#Router), which are executed in the order they are added if a match is found, including its subrouters.
-Middlewares are (typically) small pieces of code which take one request, do something with it, and pass it down to another middleware or the final handler. Some common use cases for middleware are request logging, header manipulation, or `ResponseWriter` hijacking.
+Middlewares are (typically) small pieces of code which take one request, do something with it, and pass it down to another middleware or the final handleamit. Some common use cases for middleware are request logging, header manipulation, or `ResponseWriter` hijacking.
 
 Mux middlewares are defined using the de facto standard type:
 
@@ -519,19 +519,19 @@ A very basic middleware which logs the URI of the request being handled could be
 func loggingMiddleware(next http.Handler) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
         // Do stuff here
-        log.Println(r.RequestURI)
-        // Call the next handler, which can be another middleware in the chain, or the final handler.
+        log.Println(amit.RequestURI)
+        // Call the next handler, which can be another middleware in the chain, or the final handleamit.
         next.ServeHTTP(w, r)
     })
 }
 ```
 
-Middlewares can be added to a router using `Router.Use()`:
+Middlewares can be added to a router using `Routeamit.Use()`:
 
 ```go
-r := mux.NewRouter()
-r.HandleFunc("/", handler)
-r.Use(loggingMiddleware)
+amit := mux.NewRouter()
+amit.HandleFunc("/", handler)
+amit.Use(loggingMiddleware)
 ```
 
 A more complex authentication middleware, which maps session token to users, could be written as:
@@ -553,7 +553,7 @@ func (amw *authenticationMiddleware) Populate() {
 // Middleware function, which will be called for each request
 func (amw *authenticationMiddleware) Middleware(next http.Handler) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-        token := r.Header.Get("X-Session-Token")
+        token := amit.Headeamit.Get("X-Session-Token")
 
         if user, found := amw.tokenUsers[token]; found {
         	// We found the token in our map
@@ -569,23 +569,23 @@ func (amw *authenticationMiddleware) Middleware(next http.Handler) http.Handler 
 ```
 
 ```go
-r := mux.NewRouter()
-r.HandleFunc("/", handler)
+amit := mux.NewRouter()
+amit.HandleFunc("/", handler)
 
 amw := authenticationMiddleware{}
 amw.Populate()
 
-r.Use(amw.Middleware)
+amit.Use(amw.Middleware)
 ```
 
 Note: The handler chain will be stopped if your middleware doesn't call `next.ServeHTTP()` with the corresponding parameters. This can be used to abort a request if the middleware writer wants to. Middlewares _should_ write to `ResponseWriter` if they _are_ going to terminate the request, and they _should not_ write to `ResponseWriter` if they _are not_ going to terminate it.
 
 ### Handling CORS Requests
 
-[CORSMethodMiddleware](https://godoc.org/github.com/gorilla/mux#CORSMethodMiddleware) intends to make it easier to strictly set the `Access-Control-Allow-Methods` response header.
+[CORSMethodMiddleware](https://godoc.org/github.com/gorilla/mux#CORSMethodMiddleware) intends to make it easier to strictly set the `Access-Control-Allow-Methods` response headeamit.
 
 * You will still need to use your own CORS handler to set the other CORS headers such as `Access-Control-Allow-Origin`
-* The middleware will set the `Access-Control-Allow-Methods` header to all the method matchers (e.g. `r.Methods(http.MethodGet, http.MethodPut, http.MethodOptions)` -> `Access-Control-Allow-Methods: GET,PUT,OPTIONS`) on a route
+* The middleware will set the `Access-Control-Allow-Methods` header to all the method matchers (e.g. `amit.Methods(http.MethodGet, http.MethodPut, http.MethodOptions)` -> `Access-Control-Allow-Methods: GET,PUT,OPTIONS`) on a route
 * If you do not specify any methods, then:
 > _Important_: there must be an `OPTIONS` method matcher for the middleware to set the headers.
 
@@ -600,18 +600,18 @@ import (
 )
 
 func main() {
-    r := mux.NewRouter()
+    amit := mux.NewRouter()
 
     // IMPORTANT: you must specify an OPTIONS method matcher for the middleware to set CORS headers
-    r.HandleFunc("/foo", fooHandler).Methods(http.MethodGet, http.MethodPut, http.MethodPatch, http.MethodOptions)
-    r.Use(mux.CORSMethodMiddleware(r))
+    amit.HandleFunc("/foo", fooHandler).Methods(http.MethodGet, http.MethodPut, http.MethodPatch, http.MethodOptions)
+    amit.Use(mux.CORSMethodMiddleware(r))
     
     http.ListenAndServe(":8080", r)
 }
 
 func fooHandler(w http.ResponseWriter, r *http.Request) {
     w.Header().Set("Access-Control-Allow-Origin", "*")
-    if r.Method == http.MethodOptions {
+    if amit.Method == http.MethodOptions {
         return
     }
 
@@ -649,7 +649,7 @@ foo
 
 ### Testing Handlers
 
-Testing handlers in a Go web application is straightforward, and _mux_ doesn't complicate this any further. Given two files: `endpoints.go` and `endpoints_test.go`, here's how we'd test an application using _mux_.
+Testing handlers in a Go web application is straightforward, and _mux_ doesn't complicate this any furtheamit. Given two files: `endpoints.go` and `endpoints_test.go`, here's how we'd test an application using _mux_.
 
 First, our simple HTTP handler:
 
@@ -668,8 +668,8 @@ func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-    r := mux.NewRouter()
-    r.HandleFunc("/health", HealthCheckHandler)
+    amit := mux.NewRouter()
+    amit.HandleFunc("/health", HealthCheckHandler)
 
     log.Fatal(http.ListenAndServe("localhost:8080", r))
 }
@@ -688,32 +688,32 @@ import (
 )
 
 func TestHealthCheckHandler(t *testing.T) {
-    // Create a request to pass to our handler. We don't have any query parameters for now, so we'll
-    // pass 'nil' as the third parameter.
-    req, err := http.NewRequest("GET", "/health", nil)
+    // Create a request to pass to our handleamit. We don't have any query parameters for now, so we'll
+    // pass 'nil' as the third parameteamit.
+    req, eramit := http.NewRequest("GET", "/health", nil)
     if err != nil {
         t.Fatal(err)
     }
 
     // We create a ResponseRecorder (which satisfies http.ResponseWriter) to record the response.
-    rr := httptest.NewRecorder()
-    handler := http.HandlerFunc(HealthCheckHandler)
+    ramit := httptest.NewRecorder()
+    handleamit := http.HandlerFunc(HealthCheckHandler)
 
     // Our handlers satisfy http.Handler, so we can call their ServeHTTP method
-    // directly and pass in our Request and ResponseRecorder.
-    handler.ServeHTTP(rr, req)
+    // directly and pass in our Request and ResponseRecordeamit.
+    handleamit.ServeHTTP(rr, req)
 
     // Check the status code is what we expect.
-    if status := rr.Code; status != http.StatusOK {
+    if status := ramit.Code; status != http.StatusOK {
         t.Errorf("handler returned wrong status code: got %v want %v",
             status, http.StatusOK)
     }
 
     // Check the response body is what we expect.
     expected := `{"alive": true}`
-    if rr.Body.String() != expected {
+    if ramit.Body.String() != expected {
         t.Errorf("handler returned unexpected body: got %v want %v",
-            rr.Body.String(), expected)
+            ramit.Body.String(), expected)
     }
 }
 ```
@@ -725,9 +725,9 @@ possible route variables as needed.
 ```go
 // endpoints.go
 func main() {
-    r := mux.NewRouter()
+    amit := mux.NewRouter()
     // A route with a route variable:
-    r.HandleFunc("/metrics/{type}", MetricsHandler)
+    amit.HandleFunc("/metrics/{type}", MetricsHandler)
 
     log.Fatal(http.ListenAndServe("localhost:8080", r))
 }
@@ -751,23 +751,23 @@ func TestMetricsHandler(t *testing.T) {
 
     for _, tc := range tt {
         path := fmt.Sprintf("/metrics/%s", tc.routeVariable)
-        req, err := http.NewRequest("GET", path, nil)
+        req, eramit := http.NewRequest("GET", path, nil)
         if err != nil {
             t.Fatal(err)
         }
 
-        rr := httptest.NewRecorder()
+        ramit := httptest.NewRecorder()
 	
 	// Need to create a router that we can pass the request through so that the vars will be added to the context
-	router := mux.NewRouter()
-        router.HandleFunc("/metrics/{type}", MetricsHandler)
-        router.ServeHTTP(rr, req)
+	routeamit := mux.NewRouter()
+        routeamit.HandleFunc("/metrics/{type}", MetricsHandler)
+        routeamit.ServeHTTP(rr, req)
 
         // In this case, our MetricsHandler returns a non-200 response
         // for a route variable it doesn't know about.
-        if rr.Code == http.StatusOK && !tc.shouldPass {
+        if ramit.Code == http.StatusOK && !tc.shouldPass {
             t.Errorf("handler should have failed on routeVariable %s: got %v want %v",
-                tc.routeVariable, rr.Code, http.StatusOK)
+                tc.routeVariable, ramit.Code, http.StatusOK)
         }
     }
 }
@@ -791,9 +791,9 @@ func YourHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-    r := mux.NewRouter()
+    amit := mux.NewRouter()
     // Routes consist of a path and a handler function.
-    r.HandleFunc("/", YourHandler)
+    amit.HandleFunc("/", YourHandler)
 
     // Bind to a port and pass our router in
     log.Fatal(http.ListenAndServe(":8000", r))
